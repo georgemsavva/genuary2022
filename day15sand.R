@@ -79,8 +79,11 @@ for(j in 1:12){
   ## Make the times for the bits of the wave
   t <- seq(0, durations[j]*2, length = durations[j]*44100)
   ## Create the sound wave for this chord.
-  sounds[[j]] <- round(32000 * soundwave(87 * t) * decay^(fps*t/(2*pi)))
-
+  sounds[[j]] <- round(32000 * soundwave(87 * t) * decay^(fps*t/(2)))
+  ## This stops the weird clipping noise, IDK how else to fix it.
+  sounds[[j]][1:200] <- sounds[[j]][1:200]*((1:200)/200)
+  
+  
 ## Now drawn each frame
 for(k in 1:(fps*durations[j])){
   
@@ -104,7 +107,7 @@ for(k in 1:(fps*durations[j])){
   par(bg="#050505", mar=3*c(0,0,1,1),fg="white")
   
   ## Plot sand
-  plot(points, pch=".", col=hsv(h,.8,1,.5), axes=F, ann=F, xlim=c(0,1), ylim=c(0,1))
+  plot(points, pch=".", col=hsv(h,.6,1,.7), axes=F, ann=F, xlim=c(0,1), ylim=c(0,1))
   box(col="white")
   
   # Plot bottom wave
@@ -117,7 +120,7 @@ for(k in 1:(fps*durations[j])){
   
   # Plot side waves
   par(mar=3*c(0,1,1,0))
-  plot(x=a1*sin(f1*pi*seq(0,1,.01)),y=seq(0,1,.01),xlim=c(-.5,.5), type="l",col="green",axes=FALSE)
+  plot(x=a1*sin(f1*pi*seq(0,1,.01)),y=seq(0,1,.01),xlim=c(-.7,.7), type="l",col="green",axes=FALSE)
   lines(x=a2*sin(f2*pi*seq(0,1,.01)),y=seq(0,1,.01), type="l",col="green")
   lines(x=a3*sin(f3*pi*seq(0,1,.01)),y=seq(0,1,.01), type="l",col="green")
   box(col="white")
@@ -128,7 +131,7 @@ for(k in 1:(fps*durations[j])){
   par(mar=3*c(1,1,0,0))
   plot(NA, xlim=c(0,3), ylim=c(0,3), axes=F, ann=F)
   text(rep(c(0.5,1.5,2.5),3),rep(c(0.5,1.5,2.5),each=3), 
-       notenames, col=ifelse(possiblenotes %in% c(f1,f2,f3),"green", "#555555"),cex=1.3)
+       notenames, col=ifelse(possiblenotes %in% c(f1,f2,f3),"green", "#555555"),cex=1.4)
   box(col="white")
   
   ## Finished drawing frame.
